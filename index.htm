@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classroom Commando - English Mission</title>
+    <style>
+        :root {
+            --mission-dark: #0d1b2a;
+            --mission-accent: #e63946;
+            --mission-highlight: #f1faee;
+            --mission-secondary: #1b263b;
+            --mission-light: #415a77;
+            --correct: #4ade80;
+            --incorrect: #ef4444;
+            --input-bg: #1e293b;
+            --input-text: #f8fafc;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #0a1428;
+            color: white;
+            margin: 0;
+            padding: 20px;
+            background-image: linear-gradient(rgba(10, 20, 40, 0.9), rgba(10, 20, 40, 0.9)), 
+                              url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%230d1b2a"/><path d="M0 0L100 100M100 0L0 100" stroke="%23152a38" stroke-width="1"/></svg>');
+        }
+        
+        .mission-container {
+            max-width: 800px;
+            margin: 0 auto;
+            border: 2px solid var(--mission-accent);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(230, 57, 70, 0.3);
+        }
+        
+        .mission-header {
+            background-color: var(--mission-dark);
+            padding: 15px;
+            text-align: center;
+            border-bottom: 2px solid var(--mission-accent);
+        }
+        
+        .mission-title {
+            font-size: 24px;
+            margin: 0;
+            color: var(--mission-highlight);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .mission-subtitle {
+            font-size: 14px;
+            margin: 5px 0 0;
+            color: var(--mission-light);
+        }
+        
+        .mission-badge {
+            background-color: var(--mission-secondary);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--mission-accent);
+        }
+        
+        .badge-placeholder {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 2px dashed var(--mission-light);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--mission-light);
+            font-size: 14px;
+            overflow: hidden;
+        }
+        
+        .badge-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .mission-briefing {
+            background-color: rgba(13, 27, 42, 0.8);
+            padding: 20px;
+            border-bottom: 1px solid var(--mission-secondary);
+        }
+        
+        .briefing-title {
+            color: var(--mission-accent);
+            margin-top: 0;
+            font-size: 18px;
+        }
+        
+        .briefing-text {
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+        
+        .mission-objectives {
+            background-color: rgba(13, 27, 42, 0.8);
+            padding: 20px;
+            border-bottom: 1px solid var(--mission-secondary);
+        }
+        
+        .objectives-title {
+            color: var(--mission-accent);
+            margin-top: 0;
+            font-size: 18px;
+        }
+        
+        .objective {
+            background-color: rgba(27, 38, 59, 0.3);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border-left: 4px solid var(--mission-accent);
+        }
+        
+        .objective-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--mission-highlight);
+        }
+        
+        .objective-task {
+            margin-bottom: 10px;
+        }
+        
+        .interactive-area {
+            background-color: rgba(65, 90, 119, 0.1);
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        
+        .question-container {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .question-text {
+            flex: 1;
+        }
+        
+        .feedback {
+            margin-left: 10px;
+            font-size: 20px;
+            width: 25px;
+            text-align: center;
+        }
+        
+        .correct {
+            color: var(--correct);
+        }
+        
+        .incorrect {
+            color: var(--incorrect);
+        }
+        
+        .image-placeholder {
+            width: 200px;
+            height: 150px;
+            margin: 10px auto;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 2px dashed var(--mission-light);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--mission-light);
+            font-size: 14px;
+            overflow: hidden;
+        }
+        
+        .image-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .mission-rewards {
+            background-color: rgba(13, 27, 42, 0.8);
+            padding: 20px;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+        
+        .reward-item {
+            flex: 1;
+            padding: 10px;
+        }
+        
+        .reward-title {
+            font-size: 14px;
+            color: var(--mission-light);
+            margin-bottom: 5px;
+        }
+        
+        .reward-value {
+            font-size: 18px;
+            color: var(--mission-highlight);
+            font-weight: bold;
+        }
+        
+        button {
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 10px 5px;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .check-button {
+            background-color: var(--correct);
+            font-size: 18px;
+            padding: 14px 24px;
+            display: block;
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .check-button:hover {
+            background-color: #22c55e;
+            box-shadow: 0 4px 8px rgba(74, 222, 128, 0.3);
+        }
+        
+        .variant-btn {
+            background-color: var(--input-bg);
+            border: 1px solid var(--mission-light);
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        
+        .variant-btn:hover {
+            background-color: var(--mission-light);
+        }
+        
+        .variant-btn.selected {
+            background-color: var(--mission-accent);
+            border-color: var(--mission-accent);
+        }
+        
+        input, select {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid var(--mission-secondary);
+            background-color: var(--input-bg);
+            color: var(--input-text);
+            margin: 5px;
+        }
+        
+        .rank-display {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: var(--mission-secondary);
+            border-radius: 15px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        
+        .completion-message {
+            text-align: center;
+            padding: 20px;
+            background-color: rgba(13, 27, 42, 0.9);
+            display: none;
+        }
+        
+        .success {
+            color: var(--correct);
+        }
+        
+        .variant-selector {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: rgba(27, 38, 59, 0.5);
+            border-radius: 5px;
+        }
+        
+        .variant-title {
+            font-size: 14px;
+            color: var(--mission-light);
+            margin-bottom: 5px;
+        }
+        
+        .variant-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .image-instructions {
+            font-size: 12px;
+            color: var(--mission-light);
+            margin-top: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="mission-container">
+        <div class="mission-header">
+            <h1 class="mission-title">Operation: Classroom Commando</h1>
+            <p class="mission-subtitle">Complete all objectives to earn your rank and rewards</p>
+        </div>
+        
+        <div class="mission-badge">
+            <div class="badge-placeholder">
+                <!-- CUSTOM MISSION BADGE IMAGE -->
+                <!-- Replace the src with your own image URL -->
+                <img src="https://yandex-images.clstorage.net/jcv49v250/2ff3fd6t/AAP7-SUA5n8PFUQWYRCvdD7vVeEz7IpAj2DNMQHFrRGeGWoeSnBxCSoYmMIJsJ-xnbD8NWlHyNOFThz_ooJejKUnzn1QNFObfxUVUtG0btT_7gEg593eYR8guKHE5guWyQ48qYwH8z6N7E2SudCOcPzR75aIQkmGNBk8jNIiWHmQQZsq1FH26p239cHhg-0GDl5DQyD_D5AKUv30M5bYleo-rZsf5CJOPS_NMKliDTT-sez0bGIbhIR43j-gcrro0SK462XxhesPVpQSoiG_pu5cg9Lwz3_BORN99-NnO1f5jMzZL9cgXJ9uvfM4km8mP6H_Fb7y2AUFCA5vM-MJS0KSKasGIlW6zfeV8FJS3YdtL7BTot8s4SoAzdQC1UiUm-9--9_lst89TT4QGeL_Zo0B7LbdU0mnpfrd_3NCeBngUNmqxCM2S70VV9Aiog0XDs5ToTOvb7KI4BwXgeab9MqMDgkPB6E_n3yPkvnBnIb_ov43PeKIpGVbbZ4BoKkrICK5a3ZChOjPhERzIgG_BQ7-8xHBPFzCCEHfJCDmi8dYDS2YX8YB3j0vnQK6kZ3ED4LfN58B2PVWKg98sEP52wLRiwkH4FZrbYd1kDDT3_XuLdHycj9PkHgTLVXDhHiEOa9OGW3lQVzvXwwi-aBcp16CjHZ9wDjHFavtvrPA-XmTY7h59YE2Gn13ZlGiIcwX7pzDIuENrAFqEo0FQeV61CvePchOZAP8bR2dM9qS7PY_UT1mLBOplqQ6b72wUata87OI2VdTNSveh8Qi4GDMNhzuoJNCLW7QmnM9N1P0modYfy477wWTvC4OzOKJgP20T3IvFFwgaWQk-F2fM-Pa-QJRqZvn4NX4vJSUYNHT_tcdjgFjUqy-YxnRzCaTlTvGu48f-S01Al5uXywRGMGfBE_irgeM4mqUVdkv38PQ-Vqis6m5JfNG2v9lVxCzo-3F7fxxsQOM3ACoQu_l4ncZA" alt="Mission Badge">
+                <div class="image-instructions"></div>
+            </div>
+        </div>
+        
+        <div class="mission-briefing">
+            <h2 class="briefing-title">MISSION BRIEFING</h2>
+            <p class="briefing-text">Agent, your mission is to complete all English language challenges. Each objective will test your vocabulary, grammar, and reading skills. Follow orders carefully and complete all tasks to succeed in this operation.</p>
+            <p class="briefing-text">Current Rank: <span class="rank-display">RECRUIT</span></p>
+            
+            <div class="variant-selector">
+                <div class="variant-title">SELECT MISSION VARIANT:</div>
+                <div class="variant-options">
+                    <div class="variant-btn selected" onclick="selectVariant(this, 'standard')">STANDARD</div>
+                    <div class="variant-btn" onclick="selectVariant(this, 'stealth')">STEALTH</div>
+                    <div class="variant-btn" onclick="selectVariant(this, 'assault')">ASSAULT</div>
+                    <div class="variant-btn" onclick="selectVariant(this, 'recon')">RECON</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mission-objectives">
+            <h2 class="objectives-title">MISSION OBJECTIVES</h2>
+            
+            <div class="objective" id="obj1">
+                <div class="objective-title">OBJECTIVE 1: IDENTIFICATION PROTOCOL</div>
+                <div class="objective-task">Identify the owner of each item using possessive forms.</div>
+                <div class="interactive-area">
+                    <div class="question-container">
+                        <div class="question-text">1. "These are _______ glasses." (man)</div>
+                        <select id="q1">
+                            <option value="">Select answer</option>
+                            <option value="man">man</option>
+                            <option value="man's">man's</option>
+                            <option value="mens">mens</option>
+                        </select>
+                        <div class="feedback" id="fb1"></div>
+                    </div>
+                    
+                    <div class="question-container">
+                        <div class="question-text">2. "This is a _______ helmet." (woman)</div>
+                        <select id="q2">
+                            <option value="">Select answer</option>
+                            <option value="woman">woman</option>
+                            <option value="womans">womans</option>
+                            <option value="woman's">woman's</option>
+                        </select>
+                        <div class="feedback" id="fb2"></div>
+                    </div>
+                    
+                    <div class="question-container">
+                        <div class="question-text">3. "These are _______ guns." (people)</div>
+                        <input type="text" id="q3" placeholder="Type your answer">
+                        <div class="feedback" id="fb3"></div>
+                    </div>
+                    
+                    <div class="variant-selector">
+                        <div class="variant-title">POSSESSIVE FORM VARIANTS:</div>
+                        <div class="variant-options">
+                            <div class="variant-btn" onclick="fillVariant('obj1', 'man\'s', 'woman\'s', 'people\'s')">Standard</div>
+                            <div class="variant-btn" onclick="fillVariant('obj1', 'man\'s', 'women\'s', 'people\'s')">Alternative</div>
+                            <div class="variant-btn" onclick="fillVariant('obj1', 'male\'s', 'female\'s', 'person\'s')">Formal</div>
+                        </div>
+                    </div>
+                    
+                    <button class="check-button" onclick="checkObjective1()">CHECK ANSWERS</button>
+                </div>
+            </div>
+            
+            <div class="objective" id="obj2">
+                <div class="objective-title">OBJECTIVE 2: COUNTING INTELLIGENCE</div>
+                <div class="objective-task">Provide correct answers to these counting questions.</div>
+                <div class="interactive-area">
+                    <div class="image-placeholder">
+                        <!-- CUSTOM COUNTING IMAGE -->
+                        <!-- Replace the src with your own image URL -->
+                        <img src="https://avatars.mds.yandex.net/i?id=f056ed6c3b7fef29ff33a198101a2dc4_l-4855126-images-thumbs&n=13" alt="Counting Image">
+                        <div class="image-instructions"></div>
+                    </div>
+                    
+                    <div class="question-container">
+                        <div class="question-text">"How many women are there?"</div>
+                        <input type="number" id="q4" min="0" max="10" placeholder="Enter number">
+                        <div class="feedback" id="fb4"></div>
+                    </div>
+                    
+                    <div class="question-container">
+                        <div class="question-text">"How many people are there?"</div>
+                        <input type="number" id="q5" min="0" max="10" placeholder="Enter number">
+                        <div class="feedback" id="fb5"></div>
+                    </div>
+                    
+                    <div class="variant-selector">
+                        <div class="variant-title">COUNTING VARIANTS:</div>
+                        <div class="variant-options">
+                            <div class="variant-btn" onclick="fillVariant('obj2', 1, 3)">Standard Scene</div>
+                            <div class="variant-btn" onclick="fillVariant('obj2', 2, 4)">Crowded Scene</div>
+                            <div class="variant-btn" onclick="fillVariant('obj2', 0, 2)">Minimal Scene</div>
+                        </div>
+                    </div>
+                    
+                    <button class="check-button" onclick="checkObjective2()">CHECK ANSWERS</button>
+                </div>
+            </div>
+            
+            <div class="objective" id="obj3">
+                <div class="objective-title">OBJECTIVE 3: COMMAND DECODING</div>
+                <div class="objective-task">Complete these commands with the correct verbs.</div>
+                <div class="interactive-area">
+                    <div class="question-container">
+                        <div class="question-text">"_______ to these in headphones!" (Listen/Looking)</div>
+                        <select id="q6">
+                            <option value="">Select answer</option>
+                            <option value="Listen">Listen</option>
+                            <option value="Looking">Looking</option>
+                        </select>
+                        <div class="feedback" id="fb6"></div>
+                    </div>
+                    
+                    <div class="question-container">
+                        <div class="question-text">"_______ here and help me!" (Look/Listening)</div>
+                        <select id="q7">
+                            <option value="">Select answer</option>
+                            <option value="Look">Look</option>
+                            <option value="Listening">Listening</option>
+                        </select>
+                        <div class="feedback" id="fb7"></div>
+                    </div>
+                    
+                    <div class="question-container">
+                        <div class="question-text">"_______ and don't stop!" (Go/Going)</div>
+                        <input type="text" id="q8" placeholder="Type your answer">
+                        <div class="feedback" id="fb8"></div>
+                    </div>
+                    
+                    <div class="variant-selector">
+                        <div class="variant-title">COMMAND VARIANTS:</div>
+                        <div class="variant-options">
+                            <div class="variant-btn" onclick="fillVariant('obj3', 'Listen', 'Look', 'Go')">Basic Commands</div>
+                            <div class="variant-btn" onclick="fillVariant('obj3', 'Hear', 'Watch', 'Move')">Alternative Verbs</div>
+                            <div class="variant-btn" onclick="fillVariant('obj3', 'Pay attention', 'Focus', 'Continue')">Formal Commands</div>
+                        </div>
+                    </div>
+                    
+                    <button class="check-button" onclick="checkObjective3()">CHECK ANSWERS</button>
+                </div>
+            </div>
+            
+            <div class="objective" id="obj4">
+                <div class="objective-title">OBJECTIVE 4: NEGATIVE COMMANDS</div>
+                <div class="objective-task">MAKE NEGATIVE</div>
+                <div class="interactive-area">
+                    <div class="question-container">
+                        <div class="question-text">"_______ listen to loud music."</div>
+                        <input type="text" id="q9" placeholder="Type your answer">
+                        <div class="feedback" id="fb9"></div>
+                    </div>
+                    
+                    <div class="question-container">
+                        <div class="question-text">"_______ run in the hallway."</div>
+                        <input type="text" id="q10" placeholder="Type your answer">
+                        <div class="feedback" id="fb10"></div>
+                    </div>
+                    
+                    <div class="variant-selector">
+                        <div class="variant-title">NEGATIVE COMMAND VARIANTS:</div>
+                        <div class="variant-options">
+                            <div class="variant-btn" onclick="fillVariant('obj4', 'Don\'t', 'Don\'t')">Standard</div>
+                            <div class="variant-btn" onclick="fillVariant('obj4', 'Do not', 'Do not')">Formal</div>
+                            <div class="variant-btn" onclick="fillVariant('obj4', 'Never', 'Avoid')">Strong Prohibition</div>
+                        </div>
+                    </div>
+                    
+                    <button class="check-button" onclick="checkObjective4()">CHECK ANSWERS</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mission-rewards">
+            <div class="reward-item">
+                <div class="reward-title">MISSION XP</div>
+                <div class="reward-value" id="xp-value">0/400</div>
+            </div>
+            <div class="reward-item">
+                <div class="reward-title">CURRENT RANK</div>
+                <div class="reward-value" id="rank-value">RECRUIT</div>
+            </div>
+            <div class="reward-item">
+                <div class="reward-title">OBJECTIVES</div>
+                <div class="reward-value" id="obj-value">0/4</div>
+            </div>
+        </div>
+        
+        <div class="completion-message" id="completion">
+            <h2 class="success">MISSION ACCOMPLISHED!</h2>
+            <p>You have successfully completed all objectives. Your performance has been outstanding.</p>
+            <p>New Rank: <span id="final-rank">OPERATIVE</span></p>
+            <button onclick="resetMission()">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        let completedObjectives = 0;
+        let totalXP = 0;
+        let currentVariant = 'standard';
+        
+        function selectVariant(element, variant) {
+            // Remove selected class from all variant buttons
+            document.querySelectorAll('.variant-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked button
+            element.classList.add('selected');
+            
+            // Set current variant
+            currentVariant = variant;
+            
+            // Update mission briefing based on variant
+            updateBriefing(variant);
+        }
+        
+        function updateBriefing(variant) {
+            const briefing = document.querySelector('.briefing-text');
+            const subtitle = document.querySelector('.mission-subtitle');
+            
+            switch(variant) {
+                case 'stealth':
+                    subtitle.textContent = "Stealth mode: Complete objectives quietly and efficiently";
+                    briefing.innerHTML = "Agent, your mission is to complete all English language challenges <strong>without detection</strong>. Use stealth and precision to succeed in this covert operation.";
+                    break;
+                case 'assault':
+                    subtitle.textContent = "Assault mode: Complete objectives with speed and aggression";
+                    briefing.innerHTML = "Agent, your mission is to complete all English language challenges with <strong>maximum speed and efficiency</strong>. Use aggressive tactics to overcome all obstacles.";
+                    break;
+                case 'recon':
+                    subtitle.textContent = "Recon mode: Gather intelligence and complete objectives";
+                    briefing.innerHTML = "Agent, your mission is to gather intelligence through English language challenges. Use your <strong>observation skills</strong> to complete all reconnaissance objectives.";
+                    break;
+                default:
+                    subtitle.textContent = "Complete all objectives to earn your rank and rewards";
+                    briefing.innerHTML = "Agent, your mission is to complete all English language challenges. Each objective will test your vocabulary, grammar, and reading skills. Follow orders carefully and complete all tasks to succeed in this operation.";
+            }
+        }
+        
+        function fillVariant(objective, answer1, answer2, answer3 = null) {
+            switch(objective) {
+                case 'obj1':
+                    document.getElementById('q1').value = answer1;
+                    document.getElementById('q2').value = answer2;
+                    if (answer3) document.getElementById('q3').value = answer3;
+                    break;
+                case 'obj2':
+                    document.getElementById('q4').value = answer1;
+                    document.getElementById('q5').value = answer2;
+                    break;
+                case 'obj3':
+                    document.getElementById('q6').value = answer1;
+                    document.getElementById('q7').value = answer2;
+                    if (answer3) document.getElementById('q8').value = answer3;
+                    break;
+                case 'obj4':
+                    document.getElementById('q9').value = answer1;
+                    document.getElementById('q10').value = answer2;
+                    break;
+            }
+        }
+        
+        function checkObjective1() {
+            const q1 = document.getElementById('q1').value;
+            const q2 = document.getElementById('q2').value;
+            const q3 = document.getElementById('q3').value.toLowerCase().trim();
+            
+            // Check answers and show feedback
+            checkAnswer('q1', 'fb1', q1 === "man's");
+            checkAnswer('q2', 'fb2', q2 === "woman's");
+            checkAnswer('q3', 'fb3', q3 === "people's");
+            
+            // Check if all answers are correct
+            if (q1 === "man's" && q2 === "woman's" && q3 === "people's") {
+                if (!document.getElementById('obj1').classList.contains('completed')) {
+                    document.getElementById('obj1').classList.add('completed');
+                    document.getElementById('obj1').style.borderLeft = "4px solid var(--correct)";
+                    completedObjectives++;
+                    totalXP += 100;
+                    updateProgress();
+                }
+            }
+        }
+        
+        function checkObjective2() {
+            const q4 = parseInt(document.getElementById('q4').value);
+            const q5 = parseInt(document.getElementById('q5').value);
+            
+            // Check answers and show feedback
+            checkAnswer('q4', 'fb4', q4 === 1);
+            checkAnswer('q5', 'fb5', q5 === 3);
+            
+            // Check if all answers are correct
+            if (q4 === 1 && q5 === 3) {
+                if (!document.getElementById('obj2').classList.contains('completed')) {
+                    document.getElementById('obj2').classList.add('completed');
+                    document.getElementById('obj2').style.borderLeft = "4px solid var(--correct)";
+                    completedObjectives++;
+                    totalXP += 100;
+                    updateProgress();
+                }
+            }
+        }
+        
+        function checkObjective3() {
+            const q6 = document.getElementById('q6').value;
+            const q7 = document.getElementById('q7').value;
+            const q8 = document.getElementById('q8').value.toLowerCase().trim();
+            
+            // Check answers and show feedback
+            checkAnswer('q6', 'fb6', q6 === "Listen");
+            checkAnswer('q7', 'fb7', q7 === "Look");
+            checkAnswer('q8', 'fb8', q8 === "go");
+            
+            // Check if all answers are correct
+            if (q6 === "Listen" && q7 === "Look" && q8 === "go") {
+                if (!document.getElementById('obj3').classList.contains('completed')) {
+                    document.getElementById('obj3').classList.add('completed');
+                    document.getElementById('obj3').style.borderLeft = "4px solid var(--correct)";
+                    completedObjectives++;
+                    totalXP += 100;
+                    updateProgress();
+                }
+            }
+        }
+        
+        function checkObjective4() {
+            const q9 = document.getElementById('q9').value.toLowerCase().trim();
+            const q10 = document.getElementById('q10').value.toLowerCase().trim();
+            
+            // Check answers and show feedback
+            checkAnswer('q9', 'fb9', q9 === "don't" || q9 === "do not");
+            checkAnswer('q10', 'fb10', q10 === "don't" || q10 === "do not");
+            
+            // Check if all answers are correct
+            if ((q9 === "don't" || q9 === "do not") && (q10 === "don't" || q10 === "do not")) {
+                if (!document.getElementById('obj4').classList.contains('completed')) {
+                    document.getElementById('obj4').classList.add('completed');
+                    document.getElementById('obj4').style.borderLeft = "4px solid var(--correct)";
+                    completedObjectives++;
+                    totalXP += 100;
+                    updateProgress();
+                }
+            }
+        }
+        
+        function checkAnswer(inputId, feedbackId, isCorrect) {
+            const feedback = document.getElementById(feedbackId);
+            if (isCorrect) {
+                feedback.textContent = "✓";
+                feedback.className = "feedback correct";
+                document.getElementById(inputId).style.border = "2px solid var(--correct)";
+            } else {
+                feedback.textContent = "✗";
+                feedback.className = "feedback incorrect";
+                document.getElementById(inputId).style.border = "2px solid var(--incorrect)";
+            }
+        }
+        
+        function updateProgress() {
+            document.getElementById('xp-value').textContent = `${totalXP}/400`;
+            document.getElementById('obj-value').textContent = `${completedObjectives}/4`;
+            
+            // Update rank based on XP
+            let rank = "RECRUIT";
+            if (totalXP >= 100) rank = "PRIVATE";
+            if (totalXP >= 200) rank = "CORPORAL";
+            if (totalXP >= 300) rank = "SERGEANT";
+            if (totalXP >= 400) rank = "OPERATIVE";
+            
+            document.getElementById('rank-value').textContent = rank;
+            
+            // Check if mission is complete
+            if (completedObjectives === 4) {
+                document.getElementById('completion').style.display = 'block';
+                document.getElementById('final-rank').textContent = rank;
+            }
+        }
+        
+        function resetMission() {
+            completedObjectives = 0;
+            totalXP = 0;
+            
+            // Reset all inputs
+            const inputs = document.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                input.value = '';
+                input.style.border = "1px solid var(--mission-secondary)";
+            });
+            
+            // Reset feedback
+            const feedbacks = document.querySelectorAll('.feedback');
+            feedbacks.forEach(fb => {
+                fb.textContent = '';
+                fb.className = 'feedback';
+            });
+            
+            // Reset objective borders and completion status
+            const objectives = document.querySelectorAll('.objective');
+            objectives.forEach(obj => {
+                obj.classList.remove('completed');
+                obj.style.borderLeft = "4px solid var(--mission-accent)";
+            });
+            
+            // Hide completion message
+            document.getElementById('completion').style.display = 'none';
+            
+            // Reset progress display
+            updateProgress();
+        }
+    </script>
+</body>
+</html>
